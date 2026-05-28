@@ -161,11 +161,59 @@ The agent will:
 
 ---
 
+## Tools
+
+The `tools/` directory contains three helper scripts referenced by the skills:
+
+| Script | Purpose |
+|---|---|
+| `jira_tool.py` | Fetches JIRA ticket details; posts comments |
+| `confluence_tool.py` | Finds and updates Confluence pages |
+| `run_pytest_with_html_report.sh` | Runs service automation tests with Allure report |
+
+### Setup
+
+```bash
+cp tools/.env.example tools/.env
+# Edit tools/.env and fill in your JIRA_PAT, JIRA_BASE_URL, CONFLUENCE_PAT, CONFLUENCE_BASE_URL
+```
+
+Scripts read credentials from environment variables (loaded from `.env`). The `.env` file is gitignored — never commit it.
+
+### Usage
+
+```bash
+# Fetch a JIRA ticket
+python tools/jira_tool.py fetch FTRS-1234
+
+# Post a comment to JIRA
+python tools/jira_tool.py comment FTRS-1234 --file path/to/comment.md
+
+# Find a Confluence page
+python tools/confluence_tool.py find --space DR "FTRS-1234"
+
+# Update a Confluence page
+python tools/confluence_tool.py update <PAGE_ID> --file path/to/test_plan.md
+
+# Run service automation tests
+bash tools/run_pytest_with_html_report.sh "crud-org-api crud-healthcare-service-api"
+```
+
+The skills reference these tools at `~/scripts/jira/` and `~/scripts/` — update the paths inside the SKILL.md files if you place the tools elsewhere.
+
+---
+
 ## Repository Structure
 
 ```
 ai-qa-toolkit/
 ├── README.md
+├── .gitignore
+├── tools/
+│   ├── jira_tool.py
+│   ├── confluence_tool.py
+│   ├── run_pytest_with_html_report.sh
+│   └── .env.example
 └── skills/
     ├── ftrs-test-agent/
     │   └── SKILL.md
